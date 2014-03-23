@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 
 public class Docket {
 	private Scheduler sched;
-	private static final Pattern SKIP = Pattern.compile("^(?:(?:#.*)|(?:\\s*))$");
+	private static final Pattern COMMENT = Pattern.compile("#.*$");
+	private static final Pattern SKIP = Pattern.compile("^\\s*$");
 	private static final Pattern LEADING_WHITESPACE = Pattern.compile("^\\s+\\S+.*$");
 	
 	public void load() throws IOException {
@@ -26,6 +27,7 @@ public class Docket {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		String line = null;
 		while((line = reader.readLine()) != null) {
+			line = COMMENT.matcher(line).replaceFirst("");
 			if(SKIP.matcher(line).matches()) continue;
 			if(LEADING_WHITESPACE.matcher(line).matches()) {
 				tasks.add(new Task(line.trim()));
