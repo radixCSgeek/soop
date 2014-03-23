@@ -28,7 +28,7 @@ public class Docket {
 		while((line = reader.readLine()) != null) {
 			if(SKIP.matcher(line).matches()) continue;
 			if(LEADING_WHITESPACE.matcher(line).matches()) {
-				tasks.add(new Task(line));
+				tasks.add(new Task(line.trim()));
 			} else {
 				scheduleLoadedEntries(schedPattern, tasks);
 				tasks.clear();

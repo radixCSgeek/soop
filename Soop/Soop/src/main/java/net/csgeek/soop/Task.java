@@ -2,22 +2,25 @@ package net.csgeek.soop;
 
 import static net.csgeek.soop.Constants.PACKAGE;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cascading.flow.Flow;
 
 public class Task {
 	private static final Pattern VAR = Pattern.compile("\\$\\$\\{(\\S+)\\}");
 	
-	FlowFactory factory;
-	String command;
-	String args;
+	private FlowFactory factory;
+	private String command;
+	private String args;
 	
 	public Task(String entry) {
-		String[] parts = entry.trim().split("\\s", 1);
+		String[] parts = entry.trim().split("\\s+", 2);
 		String[] commandParts = parts[0].split(":");
 		String taskName = commandParts[0];
 		command = commandParts[1];
-		args = replaceVars(parts[1]);
+		args = parts[1];
 		
 		try {
 			String factoryClassName = taskName;
@@ -35,9 +38,22 @@ public class Task {
 		Matcher m = VAR.matcher(line);
 		StringBuffer sb = new StringBuffer();
 		while(m.find()) {
-			m.appendReplacement(sb, System.getProperty(m.group(1)));
+			String property = System.getProperty(m.group(1));
+			m.appendReplacement(sb, property==null?"":property);
 		}
 		m.appendTail(sb);
 		return sb.toString();
+	}
+
+	public List<Flow<?>> getFlows() {
+		return factory.getFlows();
+	}
+
+	public String getCommand() {
+		return command;
+	}
+
+	public String getArgs() {
+		return replaceVars(args);
 	}
 }

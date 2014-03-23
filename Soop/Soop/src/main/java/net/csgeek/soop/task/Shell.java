@@ -1,18 +1,23 @@
 package net.csgeek.soop.task;
 
+import static net.csgeek.soop.Constants.ACTION_PREFIX;
+import static net.csgeek.soop.Constants.CONFIG_FILE;
 import static net.csgeek.soop.Constants.TASK_ARGS;
 import static net.csgeek.soop.Constants.TASK_COMMAND;
-import static net.csgeek.soop.Constants.ACTION_PREFIX;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.csgeek.soop.FlowFactory;
+
+import org.apache.commons.exec.CommandLine;
+
 import riffle.process.DependencyIncoming;
 import riffle.process.DependencyOutgoing;
 import riffle.process.Process;
@@ -52,11 +57,15 @@ public class Shell implements FlowFactory {
 			inputs.add(m.group(1));
 		}
 		argStr = m.replaceAll("");
+		
+		if(inputs.isEmpty()) inputs.add(CONFIG_FILE);
+		
 		m = OUTPUT.matcher(argStr);
 		while(m.find()) {
 			outputs.add(m.group(1));
 		}
 		argStr = m.replaceAll("");
+		if(outputs.isEmpty()) outputs.add("shell completed: "+command+" "+argStr);
 	}
 	
 	@DependencyIncoming
@@ -72,8 +81,18 @@ public class Shell implements FlowFactory {
 	@ProcessStart
 	public void start()
 	{
-		ProcessBuilder builder = new ProcessBuilder(command+" "+argStr);
+//		CommandLine commandline = CommandLine.parse(command+" "+argStr);
+//		DefaultExecutor executor = new DefaultExecutor();
+//		ExecuteStreamHandler streamHandler = new Exec
+//		executor.execute(commandline);
+//		executor.
+		
+		CommandLine cl = CommandLine.parse(command+" "+argStr);
+		LinkedList<String> commandline = new LinkedList<String>(Arrays.asList(cl.getArguments()));
+		commandline.addFirst(cl.getExecutable());
+		ProcessBuilder builder = new ProcessBuilder(commandline);
 		try {
+			builder.redirectErrorStream(true);
 			proc = builder.start();
 			fromProc = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 		} catch (IOException e) {
@@ -86,7 +105,6 @@ public class Shell implements FlowFactory {
 	{
 		if(proc == null) start();
 		try {
-			proc.waitFor();
 			String line = null;
 			while((line = fromProc.readLine()) != null) {
 				Matcher m = SETTER.matcher(line);
@@ -95,6 +113,7 @@ public class Shell implements FlowFactory {
 				}
 			}
 			fromProc.close();
+			proc = null;
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}

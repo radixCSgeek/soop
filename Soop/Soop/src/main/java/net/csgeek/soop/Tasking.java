@@ -1,17 +1,20 @@
 package net.csgeek.soop;
 
-import static net.csgeek.soop.Constants.STATE_FILE;
+import static net.csgeek.soop.Constants.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.cascade.CascadeDef;
+import cascading.cascade.CascadeProps;
 import cascading.flow.Flow;
+import cascading.property.AppProps;
 
 public class Tasking implements Runnable {
 
@@ -26,11 +29,18 @@ public class Tasking implements Runnable {
 	public void run() {
 		CascadeDef def = new CascadeDef();
 		for(Task oneTask : tasks) {
-			for(Flow<?> f : oneTask.factory.getFlows()) {
+			System.setProperty(TASK_COMMAND, oneTask.getCommand());
+			System.setProperty(TASK_ARGS, oneTask.getArgs());
+			for(Flow<?> f : oneTask.getFlows()) {
 				def.addFlow(f);
 			}
 		}
-		CascadeConnector connector = new CascadeConnector();
+		
+	    Properties properties = new Properties();
+	    AppProps.setApplicationJarClass( properties, Docket.class );
+	    AppProps.setApplicationName(properties, "soop");
+	    CascadeProps.setMaxConcurrentFlows(properties, 10); //TODO: Why isn't the default(0) working?
+		CascadeConnector connector = new CascadeConnector(properties);
 		Cascade workflow = connector.connect(def);
 		workflow.prepare();
 		workflow.start();

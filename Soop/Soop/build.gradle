@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+	mavenRepo name: 'HDP', url: 'http://repo.hortonworks.com/content/repositories/releases/'
+	mavenLocal()
+	mavenCentral()
+	mavenRepo name: 'conjars', url: 'http://conjars.org/repo/'
+     flatDir {
+        dirs 'lib'
+    }
+ }
+  
+dependencies {
+  compile 'cascading:cascading-core:2.5.+'
+  compile 'cascading:cascading-hadoop:2.5.+'
+  compile ':cron4j:2.2.+'
+  compile 'org.apache.commons:commons-exec:+'
+  runtime 'org.apache.hadoop:hadoop-mapreduce-client-core:2.2.0.+'
+  runtime 'org.apache.hadoop:hadoop-common:2.2.0.+'
+}
