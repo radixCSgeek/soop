@@ -17,6 +17,7 @@ import riffle.process.DependencyIncoming;
 import riffle.process.DependencyOutgoing;
 import riffle.process.Process;
 import riffle.process.ProcessComplete;
+import riffle.process.ProcessStop;
 
 @Process
 public class ToolRunnerTask implements TaskEntry {
@@ -63,5 +64,10 @@ public class ToolRunnerTask implements TaskEntry {
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
+	}
+	
+	@ProcessStop
+	public void stop() {
+		//hmmm ... nothing we can do here really
 	}
 }
