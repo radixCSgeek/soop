@@ -17,7 +17,7 @@ Soop uses a cron like syntax for scheduling tasks:
 +------------- min (0 - 59)
 ```
 
-Soop uses a simple flat-file syntax for it's work docket, like this:
+Soop uses a simple flat-file syntax for it's work docket. File is name "docket" and expected to exist in the working directory of Soop. The docket file syntax looks like this:
 ```
 * * * * *  <---- Cron style line to mark a scheduled block of tasks
         type:command arg1 arg2 arg3  <---- one or more task entry lines in each scheduled block
@@ -32,8 +32,21 @@ Soop uses a simple flat-file syntax for it's work docket, like this:
 ```
 
 Soop offers a few built in tasks types, but you can add any types you like by implementing the TaskEntry interface. The built-in types are:
-  Cascading   <---- Executes a class which implements the FlowFactory interface and returns one or more Cascading Flows
-  Java    <-------- Executes a Pojo which has been annotated with Riffle annotations
-  Shell   <-------- Executes any shell command as a new process
+
+Type Name | Description
+--------- | ---------------
+Cascading | Executes a class which implements the FlowFactory interface and returns one or more [Cascading](http://www.cascading.org) Flows
+Java      | Executes a Pojo which has been annotated with [Riffle](https://github.com/cwensel/riffle) annotations
+Shell     | Executes any shell command as a new process
 
 Custom tasks types can be added by including them in the classpath and referring to them by fully qualified class name.
+
+Soop also provide a simple way to pass in values for your jobs, or pass values between your jobs. Soop uses the Java System Properties for sharing values. Soop uses a flat file named "state" in the Soop working directory to store these properties periodically in order to aid recover in case of a crash. You may modify the state file and reload to feed values into Soop.
+
+Your Java classes can access these properties directly for reading and writing. You can pass properties to your Shell command via the arguments. Entries in the arguments of the form **$${property name}** will be interpolated from the System Properties, This applies to all task types, not just Shell. To set properties from your shell command, have it print **!SOOP:$$property=value** to standard out. For example, if your bash script prints out *!SOOP:$$numFiles=5*, Soop will populate the property "num_files" with the value "5".
+
+There are two special Soop System Properties which are always available:
+- **net.csgeek.soop.args** is the fully interpolated argument string from the task entry
+- **net.csgeek.soop.command** is the command string from the task entry
+
+The special synatx **!SOOP:** is used to tell some specific information to Soop. You can think of it as shouting something to the supervisor like "Hey Soop, the value of numFiles should be 5!" This syntax is used in two places. The first (which was mentioned above) is for setting properties as part of the output of a shell command. The second is for indicating the inputs and outputs of a shell command. These are necessary for properly coordinating dependencies between the shell command and other tasks scheduled in the same block. Use **!SOOP:input=some_input_name** to indicate an input dependency. Use **!SOOP:output=some_output_name** to indicate an output which some other job in the task block might depend on. The input and output entries may appear anywhere in the args section of the task entry, and each may appear as often as necessary to list all of the inputs and outputs. The args interpolation will process and remove these entries from the args string.
