@@ -1,3 +1,2 @@
 * * * * *
 	Shell:/bin/bash addOne.sh $${val}
-#	Shell:/usr/bin/java -version

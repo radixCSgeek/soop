@@ -39,12 +39,12 @@ public class ToolRunnerTask implements TaskEntry {
 		try {
 			argStr = System.getProperty(TASK_ARGS);
 			argStr = dependencies.processDependencies(argStr);
-			toolIncomingMethod = findMethodWith(toolToRun, DependencyIncoming.class, true);
-			toolOutgoingMethod = findMethodWith(toolToRun, DependencyOutgoing.class, true);
 			String factoryClassName = System.getProperty(TASK_COMMAND);
 			Class<?> clazz = Class.forName(factoryClassName);
 			toolToRun = Tool.class.cast(clazz.newInstance());
-			Flow<?> f = new ProcessFlow<ToolRunnerTask>(factoryClassName, this);
+			toolIncomingMethod = findMethodWith(toolToRun, DependencyIncoming.class, true);
+			toolOutgoingMethod = findMethodWith(toolToRun, DependencyOutgoing.class, true);
+			Flow<?> f = new ProcessFlow<ToolRunnerTask>(factoryClassName+" "+argStr, this);
 			LinkedList<Flow<?>> flows = new LinkedList<Flow<?>>();
 			flows.add(f);
 			return flows;
