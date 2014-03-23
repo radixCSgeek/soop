@@ -5,6 +5,7 @@ public class Constants {
 	public static final String TASK_ARGS = PACKAGE+".args";
 	public static final String TASK_COMMAND = PACKAGE+".command";
 	public static final String STATE_FILE = "state";
-	public static final String CONFIG_FILE = "conf";
+	public static final String CONFIG_FILE = "docket";
+	public static final String ACTION_PREFIX = "!SOOP:";
 
 }

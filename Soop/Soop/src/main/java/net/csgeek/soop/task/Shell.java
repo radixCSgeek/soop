@@ -2,6 +2,7 @@ package net.csgeek.soop.task;
 
 import static net.csgeek.soop.Constants.TASK_ARGS;
 import static net.csgeek.soop.Constants.TASK_COMMAND;
+import static net.csgeek.soop.Constants.ACTION_PREFIX;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.csgeek.soop.FlowFactory;
+import riffle.process.DependencyIncoming;
+import riffle.process.DependencyOutgoing;
 import riffle.process.Process;
 import riffle.process.ProcessComplete;
 import riffle.process.ProcessStart;
@@ -26,9 +29,9 @@ public class Shell implements FlowFactory {
 	private String argStr;
 	private java.lang.Process proc = null;
 	private BufferedReader fromProc = null;
-	private static final Pattern SETTER = Pattern.compile("^\\$\\$([^\\s=]+)=(.+)$");
-	private static final Pattern INPUT = Pattern.compile("\\!INPUT=(\\S+)");
-	private static final Pattern OUTPUT = Pattern.compile("\\!OUTPUT=(\\S+)");
+	private static final Pattern SETTER = Pattern.compile("^"+ACTION_PREFIX+"\\$\\$([^\\s=]+)=(.+)$");
+	private static final Pattern INPUT = Pattern.compile(ACTION_PREFIX+"input=(\\S+)");
+	private static final Pattern OUTPUT = Pattern.compile(ACTION_PREFIX+"output=(\\S+)");
 	private LinkedList<String> inputs = new LinkedList<String>();
 	private LinkedList<String> outputs = new LinkedList<String>();
 	
@@ -54,6 +57,16 @@ public class Shell implements FlowFactory {
 			outputs.add(m.group(1));
 		}
 		argStr = m.replaceAll("");
+	}
+	
+	@DependencyIncoming
+	public List<String> incoming() {
+		return inputs;
+	}
+	
+	@DependencyOutgoing
+	public List<String> outgoing() {
+		return outputs;
 	}
 
 	@ProcessStart
