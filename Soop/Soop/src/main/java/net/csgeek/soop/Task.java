@@ -11,7 +11,7 @@ import cascading.flow.Flow;
 public class Task {
 	private static final Pattern VAR = Pattern.compile("\\$\\$\\{(\\S+)\\}");
 	
-	private FlowFactory factory;
+	private TaskEntry factory;
 	private String command;
 	private String args;
 	
@@ -25,10 +25,10 @@ public class Task {
 		try {
 			String factoryClassName = taskName;
 			if(!taskName.contains(".")) {
-				factoryClassName = PACKAGE+".task."+taskName;
+				factoryClassName = PACKAGE+".task."+taskName+"Task";
 			}
 			Class<?> clazz = Class.forName(factoryClassName);
-			factory = FlowFactory.class.cast(clazz.newInstance());
+			factory = TaskEntry.class.cast(clazz.newInstance());
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
@@ -46,7 +46,7 @@ public class Task {
 	}
 
 	public List<Flow<?>> getFlows() {
-		return factory.getFlows();
+		return factory.getWorkflows();
 	}
 
 	public String getCommand() {

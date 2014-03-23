@@ -5,14 +5,14 @@ import static net.csgeek.soop.Constants.TASK_COMMAND;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.csgeek.soop.FlowFactory;
+import net.csgeek.soop.TaskEntry;
 import cascading.flow.Flow;
 import cascading.flow.hadoop.ProcessFlow;
 
-public class Java implements FlowFactory {
+public class JavaTask implements TaskEntry {
 
 	@Override
-	public List<cascading.flow.Flow<?>> getFlows() {
+	public List<cascading.flow.Flow<?>> getWorkflows() {
 		try {
 			String factoryClassName = System.getProperty(TASK_COMMAND);
 			Class<?> clazz = Class.forName(factoryClassName);

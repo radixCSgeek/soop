@@ -4,6 +4,6 @@ import java.util.List;
 
 import cascading.flow.Flow;
 
-public interface FlowFactory {
-	public List<Flow<?>> getFlows();
+public interface TaskEntry {
+	public List<Flow<?>> getWorkflows();
 }

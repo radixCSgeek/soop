@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.csgeek.soop.FlowFactory;
+import net.csgeek.soop.DependencyParser;
+import net.csgeek.soop.TaskEntry;
 
 import org.apache.commons.exec.CommandLine;
 
@@ -28,53 +29,38 @@ import cascading.flow.Flow;
 import cascading.flow.hadoop.ProcessFlow;
 
 @Process
-public class Shell implements FlowFactory {
+public class ShellTask implements TaskEntry {
 
 	private String command;
 	private String argStr;
 	private java.lang.Process proc = null;
 	private BufferedReader fromProc = null;
 	private static final Pattern SETTER = Pattern.compile("^"+ACTION_PREFIX+"\\$\\$([^\\s=]+)=(.+)$");
-	private static final Pattern INPUT = Pattern.compile(ACTION_PREFIX+"input=(\\S+)");
-	private static final Pattern OUTPUT = Pattern.compile(ACTION_PREFIX+"output=(\\S+)");
-	private LinkedList<String> inputs = new LinkedList<String>();
-	private LinkedList<String> outputs = new LinkedList<String>();
+	private DependencyParser dependencies = new DependencyParser();
 	
 	@Override
-	public List<Flow<?>> getFlows() {
+	public List<Flow<?>> getWorkflows() {
 		command = System.getProperty(TASK_COMMAND);
 		argStr = System.getProperty(TASK_ARGS);
 		String name = command+" "+argStr;
-		processDependencies();
+		argStr = dependencies.processDependencies(argStr);
 		LinkedList<Flow<?>> flows = new LinkedList<Flow<?>>();
-		flows.add(new ProcessFlow<Shell>(name, this));
+		flows.add(new ProcessFlow<ShellTask>(name, this));
 		return flows;
 	}
 
-	private void processDependencies() {
-		Matcher m = INPUT.matcher(argStr);
-		while(m.find()) {
-			inputs.add(m.group(1));
-		}
-		argStr = m.replaceAll("");
-		
-		if(inputs.isEmpty()) inputs.add(CONFIG_FILE);
-		
-		m = OUTPUT.matcher(argStr);
-		while(m.find()) {
-			outputs.add(m.group(1));
-		}
-		argStr = m.replaceAll("");
-		if(outputs.isEmpty()) outputs.add("shell completed: "+command+" "+argStr);
-	}
 	
 	@DependencyIncoming
 	public List<String> incoming() {
+		List<String> inputs = dependencies.getInputs();
+		if(inputs.isEmpty()) inputs.add(CONFIG_FILE);
 		return inputs;
 	}
 	
 	@DependencyOutgoing
 	public List<String> outgoing() {
+		List<String> outputs = dependencies.getOutputs();
+		if(outputs.isEmpty()) outputs.add("shell completed: "+command+" "+argStr);
 		return outputs;
 	}
 
