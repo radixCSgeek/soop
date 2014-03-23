@@ -28,7 +28,7 @@ Soop uses a simple flat-file syntax for it's work docket. File is name "docket" 
    |    +---------------------------- type of task to execute
    +--------------------------------- leading white-space indicates this line as a task entry in this schedule block
            <---- Blank lines are ignored
-# Comments look like this line, with a leading "#"
+# Everything after a '#' to the end of the line is a comment
 ```
 
 Soop offers a few built in tasks types, but you can add any types you like by implementing the TaskEntry interface. The built-in types are:
