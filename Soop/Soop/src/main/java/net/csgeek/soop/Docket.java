@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 import java.util.regex.Pattern;
 
+import net.csgeek.soop.web.SoopWebServer;
+
 public class Docket {
 	private Scheduler sched;
 	private static final Pattern COMMENT = Pattern.compile("#.*$");
@@ -71,7 +73,7 @@ public class Docket {
 				docket.clear();
 			}
 		});
-		Semaphore block = new Semaphore(0);
-		block.acquire(); //Blocks forever with scheduler thread running
+		SoopWebServer webserver = new SoopWebServer();
+		webserver.launch();
 	}
 }
