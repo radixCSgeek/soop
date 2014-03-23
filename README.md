@@ -51,3 +51,6 @@ There are two special Soop System Properties which are always available:
 - **net.csgeek.soop.command** is the command string from the task entry
 
 The special synatx **!SOOP:** is used to tell some specific information to Soop. You can think of it as shouting something to the supervisor like "Hey Soop, the value of numFiles should be 5!" This syntax is used in two places. The first (which was mentioned above) is for setting properties as part of the output of a shell command. The second is for indicating the inputs and outputs of Shell or ToolRunner commands. These are necessary for properly coordinating dependencies between the command and other tasks scheduled in the same block. Use **!SOOP:input=some_input_name** to indicate an input dependency. Use **!SOOP:output=some_output_name** to indicate an output which some other job in the task block might depend on. The input and output entries may appear anywhere in the args section of the task entry, and each may appear as often as necessary to list all of the inputs and outputs. The args interpolation will process and remove these entries from the args string.
+
+***
+Soop is built on [Cascading](http://www.cascading.org) for dependency chaining of jobs, and [cron4j](http://www.sauronsoftware.it/projects/cron4j/) for scheduling.
