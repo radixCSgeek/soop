@@ -55,31 +55,35 @@ public class ToolRunnerTask implements TaskEntry {
 
 	@DependencyIncoming
 	public Object incoming() {
-		if(toolIncomingMethod!= null) {
-			try {
-				return toolIncomingMethod.invoke(toolToRun);
-			} catch (Exception e) {
-				throw new IllegalStateException("Failed to invoke @DependencyIncoming annotated Tool method", e);
+		List<String> inputs = dependencies.getInputs();
+		if(inputs.isEmpty()) {
+			if(toolIncomingMethod!= null) {
+				try {
+					return toolIncomingMethod.invoke(toolToRun);
+				} catch (Exception e) {
+					throw new IllegalStateException("Failed to invoke @DependencyIncoming annotated Tool method", e);
+				}
+			} else {
+				inputs.add(CONFIG_FILE);
 			}
 		}
-		
-		List<String> inputs = dependencies.getInputs();
-		if(inputs.isEmpty()) inputs.add(CONFIG_FILE);
 		return inputs;
 	}
 	
 	@DependencyOutgoing
 	public Object outgoing() {
-		if(toolOutgoingMethod!= null) {
-			try {
-				return toolOutgoingMethod.invoke(toolToRun);
-			} catch (Exception e) {
-				throw new IllegalStateException("Failed to invoke @DependencyOutgoing annotated Tool method", e);
+		List<String> outputs = dependencies.getOutputs();
+		if(outputs.isEmpty()) {
+			if(toolOutgoingMethod!= null) {
+				try {
+					return toolOutgoingMethod.invoke(toolToRun);
+				} catch (Exception e) {
+					throw new IllegalStateException("Failed to invoke @DependencyOutgoing annotated Tool method", e);
+				}
+			} else {
+				 outputs.add("ToolRunner completed:  "+argStr);
 			}
 		}
-		
-		List<String> outputs = dependencies.getOutputs();
-		if(outputs.isEmpty()) outputs.add("ToolRunner completed:  "+argStr);
 		return outputs;
 	}
 
