@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <title>Graph | Basic usage</title>
+
+  <script type="text/javascript" src="vis/dist/vis.js"></script>
+</head>
+
+<body>
+
+<div id="mygraph"></div>
+
+<script type="text/javascript">
+     function loadDot()
+    {
+        if (window.XMLHttpRequest)
+        {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp=new XMLHttpRequest();
+        }
+        else
+        {// code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                data.dot=xmlhttp.responseText;
+                var options = {
+				    configurePhysics: true
+				}
+  				var graph = new vis.Graph(container, data, options);
+            }
+        }
+        xmlhttp.open("GET","workflow.dot",true);
+        xmlhttp.send();
+    }
+ 
+  // create a graph
+  var container = document.getElementById('mygraph');
+var data = {
+  dot: 'digraph {1 -> 1 -> 2; 2 -> 3; 2 -- 4; 2 -> 1 }'
+};
+
+loadDot();
+</script>
+
+</body>
+</html>

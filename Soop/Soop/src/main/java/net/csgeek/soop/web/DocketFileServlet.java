@@ -1,6 +1,8 @@
 package net.csgeek.soop.web;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -22,5 +24,16 @@ public class DocketFileServlet extends HttpServlet {
         response.setContentType("text/plain");
         response.setStatus(HttpServletResponse.SC_OK);
         StreamUtils.copyThenClose(in, response.getOutputStream());
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException
+    , IOException {
+	String data = request.getParameter("theFile");
+	BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_FILE));
+	writer.append(data);
+	writer.close();
+	doGet(request, response);
     }
 }

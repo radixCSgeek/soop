@@ -1,0 +1,7 @@
+digraph G {
+  1 [label = "docket"];
+  2 [label = "shell completed: /bin/bash addOne.sh 2"];
+  3 [label = "shell completed: /bin/bash addOne.sh 44"];
+  1 -> 2 [label = "/bin/bash addOne.sh 2"];
+  1 -> 3 [label = "/bin/bash addOne.sh 4"];
+}

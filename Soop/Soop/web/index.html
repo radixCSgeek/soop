@@ -38,6 +38,28 @@
         xmlhttp.open("GET","/docket",true);
         xmlhttp.send();
     }
+    
+    function sendText()
+    {
+        if (window.XMLHttpRequest)
+        {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp=new XMLHttpRequest();
+        }
+        else
+        {// code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                editor.setValue(xmlhttp.responseText);
+            }
+        }
+        document.getElementById("theFile").value = editor.getValue();
+        xmlhttp.open("POST","/docket",true);
+        xmlhttp.send();
+    }
 </script>
 
 </head>
@@ -45,6 +67,9 @@
 
 <h1>Docket File</h1>
 <pre id="editor"></pre>
+<form name="editForm" method="POST" action="/docket">
+	<input type="hidden" id="theFile">
+	<input type="submit" onClick="sendText()"
 
 <!-- load ace -->
 <script src="ace/ace.js"></script>

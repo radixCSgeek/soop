@@ -42,6 +42,7 @@ public class Tasking implements Runnable {
 	    CascadeProps.setMaxConcurrentFlows(properties, 10); //TODO: Why isn't the default(0) working?
 		CascadeConnector connector = new CascadeConnector(properties);
 		Cascade workflow = connector.connect(def);
+		workflow.writeDOT("web/workflow.dot");
 		workflow.prepare();
 		workflow.start();
 		workflow.complete();
