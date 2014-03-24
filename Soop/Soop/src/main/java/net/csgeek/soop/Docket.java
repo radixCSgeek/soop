@@ -62,18 +62,5 @@ public class Docket {
 	public void clear() {
 		sched.stop();
 		sched = null;
-	}
-	
-	public static void main(String[] args) throws Exception {
-		final Docket docket = new Docket();
-		docket.load();
-		Runtime.getRuntime().addShutdownHook(new Thread() {		
-			@Override
-			public void run() {
-				docket.clear();
-			}
-		});
-		SoopWebServer webserver = new SoopWebServer();
-		webserver.launch();
-	}
+	}	
 }

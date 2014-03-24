@@ -1,3 +1,57 @@
-<html><body>
-<h2>hello world</h2>
-</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soop docket</title>
+  <style type="text/css" media="screen">
+    body {
+        overflow: hidden;
+    }
+    
+    #editor {
+        position: absolute;
+        width: 1000px;
+        height: 1000px;
+        left:100px;
+        top:100px;
+    }
+  </style>
+  
+<script type="text/javascript">
+    function loadDocket()
+    {
+        if (window.XMLHttpRequest)
+        {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp=new XMLHttpRequest();
+        }
+        else
+        {// code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                editor.setValue(xmlhttp.responseText);
+            }
+        }
+        xmlhttp.open("GET","/docket",true);
+        xmlhttp.send();
+    }
+</script>
+
+</head>
+<body bgcolor="888888">
+
+<h1>Docket File</h1>
+<pre id="editor"></pre>
+
+<!-- load ace -->
+<script src="ace/ace.js"></script>
+<script>
+    var editor = ace.edit("editor");
+    loadDocket();
+</script>
+
+</body>
+</html>
