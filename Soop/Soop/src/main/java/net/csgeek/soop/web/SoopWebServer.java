@@ -10,7 +10,7 @@ public class SoopWebServer {
 	public void launch() throws Exception {
 	       Server server = new Server(8080);
 	        ServletHandler servlet_handler = new ServletHandler();
-	        servlet_handler.addServletWithMapping(DocketFileServlet.class, "/docket");
+	        servlet_handler.addServletWithMapping(DocketFileServlet.class, "/docketService");
 
 	        // Create the ResourceHandler. It is the object that will actually handle the request for a given file. It is
 	        // a Jetty Handler object so it is suitable for chaining with other handlers as you will see in other examples.

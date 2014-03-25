@@ -34,6 +34,6 @@ public class DocketFileServlet extends HttpServlet {
 	BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_FILE));
 	writer.append(data);
 	writer.close();
-	doGet(request, response);
+	response.sendRedirect("/");
     }
 }
