@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.csgeek.soop.Driver;
+
 import org.apache.log4j.lf5.util.StreamUtils;
 
 import static net.csgeek.soop.Constants.*;
@@ -34,6 +36,7 @@ public class DocketFileServlet extends HttpServlet {
 	BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_FILE));
 	writer.append(data);
 	writer.close();
+	Driver.reloadDocket();
 	response.sendRedirect("/");
     }
 }

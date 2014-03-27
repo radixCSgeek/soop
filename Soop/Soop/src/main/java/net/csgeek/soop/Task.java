@@ -15,7 +15,7 @@ public class Task {
 	private String command;
 	private String args;
 	
-	public Task(String entry) {
+	public Task(String entry, ClassLoader cLoader) {
 		String[] parts = entry.trim().split("\\s+", 2);
 		String[] commandParts = parts[0].split(":");
 		String taskName = commandParts[0];
@@ -27,7 +27,7 @@ public class Task {
 			if(!taskName.contains(".")) {
 				factoryClassName = PACKAGE+".task."+taskName+"Task";
 			}
-			Class<?> clazz = Class.forName(factoryClassName);
+			Class<?> clazz = Class.forName(factoryClassName, true, cLoader);
 			factory = TaskEntry.class.cast(clazz.newInstance());
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
