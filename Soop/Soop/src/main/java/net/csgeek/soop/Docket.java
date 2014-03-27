@@ -26,7 +26,7 @@ public class Docket {
 	private final Logger LOG = Logger.getLogger(Docket.class);
 	
 	public void load() throws IOException {
-		LOG.info("Loding docket file: "+CONFIG_FILE+null);
+		System.out.println("Loding docket file: "+CONFIG_FILE);
 		ClassLoader cLoader = getDylibClassLoader();
 		initializeState();
 		sched = new Scheduler();
@@ -74,13 +74,13 @@ public class Docket {
 
 	private void scheduleLoadedEntries(String schedPattern, ArrayList<Task> tasks) {
 		if(schedPattern != null && !tasks.isEmpty()) {
-			LOG.info("Scheduled "+tasks.size()+" tasks for "+schedPattern);
+			System.out.println("Scheduled "+tasks.size()+" tasks for "+schedPattern);
 			sched.schedule(schedPattern, new Tasking(tasks));
 		}
 	}
 	
 	public void clear() {
-		LOG.info("Clearing docket");
+		System.out.println("Clearing docket");
 		sched.stop();
 		sched = null;
 	}	

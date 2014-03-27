@@ -32,11 +32,11 @@ public class DocketFileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException
     , IOException {
-	String data = request.getParameter("theFile");
-	BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_FILE));
-	writer.append(data);
-	writer.close();
-	Driver.reloadDocket();
-	response.sendRedirect("/");
+		String data = request.getParameter("theFile");
+		BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_FILE));
+		writer.append(data);
+		writer.close();
+		Driver.reloadDocket();
+		response.sendRedirect("/docket.html");
     }
 }
