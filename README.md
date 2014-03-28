@@ -3,6 +3,10 @@ soop
 
 Simple lightweight workflow scheduling and coordination for Hadoop and whatever else you need to run.
 
+Start Soop by running net.csgeek.soop.Driver
+
+****
+
 So you have Hadoop jobs, you have batch jobs, you have Java jobs ... you have a lot of work to get done and no way to coordinate it all. What you need is a supervisor to plan, schedule, and coordinate all of these jobs. Soop is your supervisor for Hadoop and pretty much any other job you need done. And just like that supervisor at the job you had in highschool, this soop isn't interested in a lot of extra crap getting in the way of getting the job done! Soop is simple and easy to use. 
 
 Soop uses a cron like syntax for scheduling tasks:
