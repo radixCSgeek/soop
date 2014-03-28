@@ -21,7 +21,7 @@ Soop uses a cron like syntax for scheduling tasks:
 +------------- min (0 - 59)
 ```
 
-Soop uses a simple flat-file syntax for it's work docket. File is name "docket" and expected to exist in the working directory of Soop. The docket file syntax looks like this:
+Soop uses a simple flat-file syntax for it's work docket. The file is named "docket" and expected to exist in the working directory of Soop. The docket file syntax looks like this:
 ```
 * * * * *  <---- Cron style line to mark a scheduled block of tasks
         type:command arg1 arg2 arg3  <---- one or more task entry lines in each scheduled block
