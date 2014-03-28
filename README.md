@@ -44,7 +44,7 @@ Java      | Executes a Pojo which has been annotated with [Riffle](https://githu
 Shell     | Executes any shell command as a new process
 ToolRunner | Executes any Java class which implements the Hadoop [Tool](http://hadoop.apache.org/docs/r2.3.0/api/org/apache/hadoop/util/Tool.html) interface using the [ToolRunner](http://hadoop.apache.org/docs/r2.3.0/api/org/apache/hadoop/util/ToolRunner.html) class
 
-Custom tasks types can be added by including them in the classpath and referring to them by fully qualified class name.
+Custom tasks types can be added by including them in a directory named **dylib** under Soop's working directory and referring to them by fully qualified class name. You can include your custom Java classes here, or add them to Soop's classpath. Jars and class files in the dylib directory are dynamically added to the classpath whenever the docket is reloaded.
 
 Soop also provide a simple way to pass in values for your jobs, or pass values between your jobs. Soop uses the Java System Properties for sharing values. Soop uses a flat file named "state" in the Soop working directory to store these properties periodically in order to aid recover in case of a crash. You may modify the state file and reload to feed values into Soop.
 
