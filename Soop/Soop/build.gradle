@@ -12,11 +12,15 @@ repositories {
  }
   
 dependencies {
+  compile 'log4j:log4j:1.2.+'
   compile 'cascading:cascading-core:2.5.+'
   compile 'cascading:cascading-hadoop:2.5.+'
   compile ':cron4j:2.2.+'
   compile 'org.apache.commons:commons-exec:+'
   compile 'org.eclipse.jetty:jetty-project:+'
+  compile 'org.apache.hadoop:hadoop-client:2.2.0.+'
+  compile 'javax.servlet:javax.servlet-api:3.+'
+  compile 'org.mortbay.jetty:jetty:6.+'
   runtime 'org.apache.hadoop:hadoop-mapreduce-client-core:2.2.0.+'
   runtime 'org.apache.hadoop:hadoop-common:2.2.0.+'
 }
