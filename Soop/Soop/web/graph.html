@@ -1,49 +1,105 @@
 <!doctype html>
-<html>
-<head>
-  <title>Graph | Basic usage</title>
 
-  <script type="text/javascript" src="vis/dist/vis.js"></script>
-</head>
+<meta charset="utf-8">
+<title>Soop Job Graph</title>
 
-<body>
+<script src="javascript/d3.js"></script>
+<script src="javascript/dagre-d3.js"></script>
+<script src="javascript/graphlib-dot.js"></script>
 
-<div id="mygraph"></div>
+<style>
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+}
 
-<script type="text/javascript">
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #333;
+  stroke-width: 2px;
+  fill: #fff;
+}
+
+.edgeLabel rect {
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+}
+</style>
+
+<style>
+h1, h2 {
+  color: #333;
+}
+
+</style>
+
+<body onLoad="loadDot();">
+
+<h2>Graph Visualization</h2>
+
+<svg width=800 height=600>
+  <g transform="translate(20, 20)"/>
+</svg>
+
+<script>
+// Input related code goes here
+
+
+var oldInputGraphValue;
+
+
+function tryDraw(dot) {
+  var result;
+	try {
+	  result = graphlibDot.parse(dot);
+	} catch (e) {
+	  inputGraph.setAttribute("class", "error");
+	  throw e;
+	}
+	
+	if (result) {
+	  // Cleanup old graph
+	  var svg = d3.select("svg");
+	
+	  var renderer = new dagreD3.Renderer();
+	
+	
+	  // Uncomment the following line to get straight edges
+	  //renderer.edgeInterpolate('linear');
+	
+	  // Custom transition function
+	  function transition(selection) {
+	    return selection.transition().duration(500);
+	  }
+	
+	  renderer.transition(transition);
+	
+	  var layout = renderer.run(result, svg.select("g"));
+	  transition(d3.select("svg"))
+	    .attr("width", layout.graph().width + 40)
+	    .attr("height", layout.graph().height + 40)
+	  d3.select("svg")
+	    .call(d3.behavior.zoom().on("zoom", function() {
+	      var ev = d3.event;
+	      svg.select("g")
+	        .attr("transform", "translate(" + ev.translate + ") scale(" + ev.scale + ")");
+	    }));
+	}
+  
+}
+
      function loadDot()
     {
-        if (window.XMLHttpRequest)
-        {// code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp=new XMLHttpRequest();
-        }
-        else
-        {// code for IE6, IE5
-            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange=function()
-        {
-            if (xmlhttp.readyState==4 && xmlhttp.status==200)
-            {
-                data.dot=xmlhttp.responseText;
-                var options = {
-				    configurePhysics: true
-				}
-  				var graph = new vis.Graph(container, data, options);
-            }
-        }
-        xmlhttp.open("GET","workflow.dot",true);
-        xmlhttp.send();
+        d3.text("workflow.dot", function(text) { tryDraw(text); });
     }
- 
-  // create a graph
-  var container = document.getElementById('mygraph');
-var data = {
-  dot: 'digraph {1 -> 1 -> 2; 2 -> 3; 2 -- 4; 2 -> 1 }'
-};
-
-loadDot();
 </script>
-
-</body>
-</html>

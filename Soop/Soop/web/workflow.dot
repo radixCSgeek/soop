@@ -1,5 +1,12 @@
 digraph G {
   1 [label = "docket"];
-  2 [label = "shell completed: /bin/bash addOne.sh 7"];
-  1 -> 2 [label = "/bin/bash addOne.sh 8"];
+  2 [label = "t1"];
+  3 [label = "t2"];
+  4 [label = "shell completed: /bin/bash addOne.sh 4  "];
+  5 [label = "shell completed: /bin/bash addOne.sh 5"];
+  1 -> 2 [label = "/bin/bash addOne.sh 2 !SOOP:output=t1"];
+  3 -> 4 [label = "/bin/bash addOne.sh 4 !SOOP:input=t1 !SOOP:input=t2"];
+  2 -> 4 [label = "/bin/bash addOne.sh 4 !SOOP:input=t1 !SOOP:input=t2"];
+  1 -> 5 [label = "/bin/bash addOne.sh 5"];
+  2 -> 3 [label = "/bin/bash addOne.sh 3 !SOOP:input=t1 !SOOP:output=t2"];
 }
