@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import net.csgeek.soop.Driver.STATE;
 import cascading.cascade.Cascade;
 import cascading.cascade.CascadeConnector;
 import cascading.cascade.CascadeDef;
@@ -45,8 +46,29 @@ public class Tasking implements Runnable {
 		workflow.writeDOT("web/workflow.dot");
 		workflow.prepare();
 		workflow.start();
-		workflow.complete();
+		do {
+		    for(Flow<?> f : workflow.getFlows()) {
+			if(f.getFlowStats().isSuccessful()) {
+			    Driver.statusMap.put(f.getName(), STATE.SUCCESSFUL);
+			} else if(f.getFlowStats().isEngaged()) {
+			    Driver.statusMap.put(f.getName(), STATE.STARTED);
+			} else if(f.getFlowStats().isFailed()) {
+			    Driver.statusMap.put(f.getName(), STATE.ERROR);			    
+			}
+		    }
+		    
+		    try {
+			Thread.sleep(1000);
+		    } catch (InterruptedException e) {
+			//Eat it
+		    }
+		} while(!workflow.getStats().isFinished());
+		for(Flow<?> f : workflow.getFlows()) {
+		    Driver.statusMap.remove(f.getName());
+		}
+
 		workflow.cleanup();
+		
 		try {
 			System.getProperties().store(new BufferedWriter(new FileWriter(STATE_FILE)), String.valueOf(System.currentTimeMillis()));
 		} catch (IOException e) {

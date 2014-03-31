@@ -43,7 +43,7 @@ h1, h2 {
 
 </style>
 
-<body onLoad="loadDot();">
+<body onLoad="setInterval(function(){loadDot()},1000);">
 
 <h2>Graph Visualization</h2>
 
@@ -100,6 +100,6 @@ function tryDraw(dot) {
 
      function loadDot()
     {
-        d3.text("workflow.dot", function(text) { tryDraw(text); });
+        d3.text("dotService", function(text) { tryDraw(text); });
     }
 </script>
