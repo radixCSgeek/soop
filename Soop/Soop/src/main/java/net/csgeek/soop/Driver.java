@@ -24,10 +24,11 @@ public class Driver {
 	}
     }
     
-    public static enum FlowState { 	STARTED ("<div'>$1<br><progress max=100/></div>"), 
-				SUCCESSFUL ("<div style='background: lightblue;'>$1</div>"), 
-				ERROR ("<div style='background: red;'>$1</div>"),
-				UNDEFINED ("$1");
+    public static enum FlowState { 	
+	STARTED ("<div'>$1<br><progress max=100/></div>"), 
+	SUCCESSFUL ("<div style='background: lightblue;'>$1</div>"), 
+	ERROR ("<div style='background: red;'>$1</div>"),
+	UNDEFINED ("$1");
 	
 	private String replacement;
     	private FlowState(String str) {
