@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import cascading.stats.FlowStats;
 import net.csgeek.soop.web.SoopWebServer;
 
 public class Driver {
@@ -23,20 +24,30 @@ public class Driver {
 	}
     }
     
-    public static enum STATE { 	STARTED ("<div'>$1<br><progress max=100/></div>"), 
+    public static enum FlowState { 	STARTED ("<div'>$1<br><progress max=100/></div>"), 
 				SUCCESSFUL ("<div style='background: lightblue;'>$1</div>"), 
-				ERROR ("<div style='background: red;'>$1</div>");
+				ERROR ("<div style='background: red;'>$1</div>"),
+				UNDEFINED ("$1");
 	
 	private String replacement;
-    	private STATE(String str) {
+    	private FlowState(String str) {
     	    replacement = str;
     	}
     	public String getReplacement() {
     	    return replacement;
     	}
+    	public static FlowState forStatus(FlowStats stats) {
+		if(stats.isSuccessful()) {
+		    return SUCCESSFUL;
+		} else if(stats.isEngaged()) {
+		    return STARTED;
+		} else if(stats.isFailed()) {
+		    return ERROR;			    
+		} else return UNDEFINED;
+    	}
     };
     
-    public static ConcurrentHashMap<String, STATE> statusMap = new ConcurrentHashMap<String, STATE>();
+    public static ConcurrentHashMap<String, FlowState> statusMap = new ConcurrentHashMap<String, FlowState>();
 
     public static void main(String[] args) throws Exception {
 	PropertyConfigurator.configure("log4j.properties"); //Need to do this to override log4j config picked up from a dependency
