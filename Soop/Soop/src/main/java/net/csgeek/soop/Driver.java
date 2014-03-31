@@ -37,11 +37,16 @@ public class Driver {
     	public String getReplacement() {
     	    return replacement;
     	}
+    	protected FlowState setProgress(int p) {
+    	    replacement = replacement.replace("progress", "progress value="+p);
+    	    return this;
+    	}
     	public static FlowState forStatus(FlowStats stats) {
 		if(stats.isSuccessful()) {
 		    return SUCCESSFUL;
 		} else if(stats.isEngaged()) {
-		    return STARTED;
+		    //TODO: Calculate actual percentage from FlowStepStats
+		    return STARTED.setProgress(50);
 		} else if(stats.isFailed()) {
 		    return ERROR;			    
 		} else return UNDEFINED;
