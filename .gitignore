@@ -1,9 +1,13 @@
-Soop/.gradle
+/.gradle
 
-Soop/.classpath
+/.classpath
 
-Soop/.settings
+/.settings
 
-Soop/.project
+/.project
 
-Soop/state
+/bin
+
+/build
+
+/state
