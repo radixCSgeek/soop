@@ -2,6 +2,7 @@ package net.csgeek.soop;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import cascading.stats.FlowStats;
+import cascading.stats.FlowStepStats;
 
 public class Driver {
     private static final Logger LOG = Logger.getLogger(Driver.class);
@@ -29,7 +31,7 @@ public class Driver {
     }
     
     public static enum FlowState { 	
-	STARTED ("<div'>$1<br><progress max=100/></div>"), 
+	STARTED ("<div>$1<br><progress %p></progress></div>"), 
 	SUCCESSFUL ("<div style='background: lightblue;'>$1</div>"), 
 	ERROR ("<div style='background: red;'>$1</div>"),
 	UNDEFINED ("$1");
@@ -41,16 +43,29 @@ public class Driver {
     	public String getReplacement() {
     	    return replacement;
     	}
-    	protected FlowState setProgress(int p) {
-    	    replacement = replacement.replace("progress", "progress value="+p);
+    	protected FlowState setProgress(double p) {
+    	    replacement = replacement.replace("%p", "value="+p);
     	    return this;
     	}
     	public static FlowState forStatus(FlowStats stats) {
 		if(stats.isSuccessful()) {
 		    return SUCCESSFUL;
 		} else if(stats.isEngaged()) {
-		    //TODO: Calculate actual percentage from FlowStepStats
-		    return STARTED.setProgress(50);
+		    double progress = 0.0;
+		    List<FlowStepStats> flowStepStats = stats.getFlowStepStats();
+		    if(flowStepStats != null && !flowStepStats.isEmpty()) {
+        		for(FlowStepStats fs : flowStepStats){
+        		    if(fs.isEngaged()) {
+        			progress += 0.5;
+        		    } else if(fs.isSuccessful() | fs.isSkipped()) {
+        			progress += 1.0;
+        		    }
+        		    progress /= flowStepStats.size();
+        		}
+        		return STARTED.setProgress(progress);
+		    } else {
+			return STARTED;
+		    }
 		} else if(stats.isFailed()) {
 		    return ERROR;			    
 		} else return UNDEFINED;

@@ -20,7 +20,7 @@ public class TaskingServlet extends HttpServlet {
     private static final ObjectMapper JSON = new ObjectMapper();
     
     class TaskingListEntry {
-	public String schedule;
+	public String label;
 	public String dotFileName;
     }
     
@@ -32,7 +32,7 @@ public class TaskingServlet extends HttpServlet {
         List<TaskingListEntry> taskingList = new LinkedList<TaskingListEntry>();
         for(Tasking t: Driver.taskList) {
             TaskingListEntry tle = new TaskingListEntry();
-            tle.schedule = t.getSchedule();
+            tle.label = t.getLabel();
             tle.dotFileName = t.getDotFileName();
             taskingList.add(tle);
         }

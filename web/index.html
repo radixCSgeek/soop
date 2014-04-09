@@ -64,7 +64,7 @@ d3.json("/tasking", function(json){
     .selectAll("option")
     .data(json)
   .enter().append("option")
-    .text(function(d){return d.schedule;})
+    .text(function(d){return d.label;})
     .attr("value", function(d){return d.dotFileName;});
 	loadDot(json[0].dotFileName);
 	interval = setInterval(function(){loadDot(json[0].dotFileName)},1000);

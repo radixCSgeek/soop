@@ -23,20 +23,20 @@ import cascading.property.AppProps;
 public class Tasking implements Runnable {
 
 	private List<Task> tasks = new LinkedList<Task>();
-	private String schedule;
+	private String label;
 	private String dotFileName;
 	
-	public Tasking(List<Task> taskList, String sched) {
+	public Tasking(List<Task> taskList, String label) {
 		tasks = new ArrayList<Task>(taskList);
-		schedule = sched;
-		dotFileName = "web/workflow/"+MD5Hash.digest(schedule)+".dot";
+		this.label = label;
+		dotFileName = "web/workflow/"+MD5Hash.digest(label)+".dot";
 		Cascade workflow = getWorkflow();
 		workflow.writeDOT(dotFileName);
 	}
 	
 	
-	public String getSchedule() {
-	    return schedule;
+	public String getLabel() {
+	    return label;
 	}
 
 
@@ -91,7 +91,7 @@ public class Tasking implements Runnable {
 	    
 	    Properties properties = new Properties();
 	    AppProps.setApplicationJarClass( properties, Docket.class );
-	    AppProps.setApplicationName(properties, "soop "+getSchedule());
+	    AppProps.setApplicationName(properties, "soop "+getLabel());
 	    CascadeProps.setMaxConcurrentFlows(properties, 10); //TODO: Why isn't the default(0) working?
 	    CascadeConnector connector = new CascadeConnector(properties);
 	    Cascade workflow = connector.connect(def);
