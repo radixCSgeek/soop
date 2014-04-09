@@ -34,18 +34,21 @@ public class Docket {
 		String schedPattern = null;
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		String line = null;
+		int id = 1;
 		while((line = reader.readLine()) != null) {
 			line = COMMENT.matcher(line).replaceFirst("");
 			if(SKIP.matcher(line).matches()) continue;
 			if(LEADING_WHITESPACE.matcher(line).matches()) {
 				tasks.add(new Task(line.trim(), cLoader));
 			} else {
-				scheduleLoadedEntries(schedPattern, tasks);
+				if(scheduleLoadedEntries(schedPattern, tasks, id)) {
+				    id++;
+				}
 				tasks.clear();
 				schedPattern = line;
 			}
 		}
-		scheduleLoadedEntries(schedPattern, tasks);
+		scheduleLoadedEntries(schedPattern, tasks, id);
 		reader.close();
 		sched.start();
 	}
@@ -72,16 +75,22 @@ public class Docket {
 		System.getProperties().store(new FileWriter(stateFile), String.valueOf(System.currentTimeMillis()));
 	}
 
-	private void scheduleLoadedEntries(String schedPattern, ArrayList<Task> tasks) {
+	private boolean scheduleLoadedEntries(String schedPattern, ArrayList<Task> tasks, int id) {
 		if(schedPattern != null && !tasks.isEmpty()) {
 			LOG.info("Scheduled "+tasks.size()+" tasks for "+schedPattern);
-			sched.schedule(schedPattern, new Tasking(tasks));
+			Tasking tasking = new Tasking(tasks, String.valueOf(id)+") "+schedPattern);
+			sched.schedule(schedPattern, tasking);
+			Driver.taskList.add(tasking);
+			return true;
+		} else {
+		    return false;
 		}
 	}
 	
 	public void clear() {
 		System.out.println("Clearing docket");
 		sched.stop();
+		Driver.taskList.clear();
 		sched = null;
 	}	
 }

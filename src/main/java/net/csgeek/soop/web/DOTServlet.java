@@ -19,7 +19,8 @@ public class DOTServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException
     , IOException {
-	BufferedReader in = new BufferedReader(new FileReader("web/workflow.dot"));
+	String dotFileName = request.getParameter("dotFileName");
+	BufferedReader in = new BufferedReader(new FileReader(dotFileName));
 	StringBuilder dotBuilder = new StringBuilder();
 	String line;
 	while((line = in.readLine()) != null) {
@@ -29,7 +30,11 @@ public class DOTServlet extends HttpServlet {
 	in.close();
 	String dot = dotBuilder.toString();
 	for(String key : Driver.statusMap.keySet()) {
-        	Pattern p = Pattern.compile("\"("+key+")\"");
+	    	String[] keyParts = key.split("@@@", 2);
+	    	if(!dotFileName.equals(keyParts[0])){
+	    	    continue;
+	    	}
+        	Pattern p = Pattern.compile("\"("+keyParts[1]+")\"");
         	Matcher m = p.matcher(dot);
         	dot = m.replaceAll('"'+Driver.statusMap.get(key).getReplacement()+'"');
 	}

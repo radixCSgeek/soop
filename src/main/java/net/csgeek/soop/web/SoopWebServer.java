@@ -20,6 +20,7 @@ public class SoopWebServer {
 	ServletHandler servlet_handler = new ServletHandler();
 	servlet_handler.addServletWithMapping(DocketFileServlet.class, "/docketService");
 	servlet_handler.addServletWithMapping(DOTServlet.class, "/dotService");
+	servlet_handler.addServletWithMapping(TaskingServlet.class, "/tasking");
 
 	// Create the ResourceHandler. It is the object that will actually
 	// handle the request for a given file. It is

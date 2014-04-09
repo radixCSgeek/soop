@@ -1,6 +1,131 @@
 <html>
+<title>Soop Home</title>
+<script src="javascript/d3.js"></script>
+<script src="javascript/dagre-d3.js"></script>
+<script src="javascript/graphlib-dot.js"></script>
+
+<style>
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #333;
+  stroke-width: 2px;
+  fill: #fff;
+}
+
+.edgeLabel rect {
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+}
+</style>
+
+<style>
+h1, h2 {
+  color: #333;
+}
+
+</style>
+
 <body>
+<h1>Soop <img src="images/Hadoop-Soop.png" width=100px/></h1>
 <a href="docket.html">Edit the docket</a><br>
-<a href="graph.html">View graph</a>
+
+<div id="drop_down">
+<h3>Scheduled Jobs</h3>
+</div>
+<br>
+
+<div class=graph>
+<svg width=800 height=600>
+  <g transform="translate(20, 20)"/>
+</svg>
+</div>
+
+<script language="javascript">
+var interval;
+
+d3.json("/tasking", function(json){
+	d3.select("#drop_down").append("select")
+	.on("change", graphSelected)
+    .selectAll("option")
+    .data(json)
+  .enter().append("option")
+    .text(function(d){return d.schedule;})
+    .attr("value", function(d){return d.dotFileName;});
+	loadDot(json[0].dotFileName);
+	interval = setInterval(function(){loadDot(json[0].dotFileName)},1000);
+});
+
+function graphSelected(){
+	clearInterval(interval);
+	var dotFile = this.options[this.selectedIndex].value;
+	loadDot(dotFile);
+	interval = setInterval(function(){loadDot(dotFile)},1000);
+}
+// Input related code goes here
+
+
+var oldInputGraphValue;
+
+
+function tryDraw(dot) {
+  var result;
+	try {
+	  result = graphlibDot.parse(dot);
+	} catch (e) {
+	  inputGraph.setAttribute("class", "error");
+	  throw e;
+	}
+	
+	if (result) {
+	  // Cleanup old graph
+	  var svg = d3.select("svg");
+	
+	  var renderer = new dagreD3.Renderer();
+	
+	
+	  // Uncomment the following line to get straight edges
+	  //renderer.edgeInterpolate('linear');
+	
+	  // Custom transition function
+	  function transition(selection) {
+	    return selection.transition().duration(500);
+	  }
+	
+	  renderer.transition(transition);
+	
+	  var layout = renderer.run(result, svg.select("g"));
+	  transition(d3.select("svg"))
+	    .attr("width", layout.graph().width + 40)
+	    .attr("height", layout.graph().height + 40)
+	  d3.select("svg")
+	    .call(d3.behavior.zoom().on("zoom", function() {
+	      var ev = d3.event;
+	      svg.select("g")
+	        .attr("transform", "translate(" + ev.translate + ") scale(" + ev.scale + ")");
+	    }));
+	}
+  
+}
+
+     function loadDot(name)
+    {
+        d3.text("dotService?dotFileName="+name, function(text) { tryDraw(text); });
+    }
+</script>
 </body>
 </html>

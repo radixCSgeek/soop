@@ -1,13 +1,17 @@
 package net.csgeek.soop;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import net.csgeek.soop.web.SoopWebServer;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import cascading.stats.FlowStats;
-import net.csgeek.soop.web.SoopWebServer;
 
 public class Driver {
     private static final Logger LOG = Logger.getLogger(Driver.class);
@@ -54,10 +58,16 @@ public class Driver {
     };
     
     public static ConcurrentHashMap<String, FlowState> statusMap = new ConcurrentHashMap<String, FlowState>();
+    public static ConcurrentLinkedQueue<Tasking> taskList = new ConcurrentLinkedQueue<Tasking>();
 
     public static void main(String[] args) throws Exception {
 	PropertyConfigurator.configure("log4j.properties"); //Need to do this to override log4j config picked up from a dependency
 	LOG.info("Starting Soop ...");
+	File dotDir = new File("web/workflow");
+	if(dotDir.exists()) {
+	    FileUtils.deleteDirectory(dotDir);
+	}
+	dotDir.mkdirs();
 	docket = new Docket();
 	docket.load();
 	Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -71,6 +81,7 @@ public class Driver {
 	webserver.launch();
 	LOG.info("Soop started.");
 	webserver.waitFor();
+	FileUtils.deleteDirectory(dotDir);
     }
 
 }
