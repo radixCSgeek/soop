@@ -12,4 +12,6 @@
 
 /state
 
-web/workflow
+/web/workflow
+
+*.dot
