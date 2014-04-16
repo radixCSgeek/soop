@@ -3,7 +3,7 @@ soop
 
 Simple lightweight workflow scheduling and coordination for Hadoop and whatever else you need to run.
 
-Start Soop by running net.csgeek.soop.Driver
+Start Soop from Java source by running net.csgeek.soop.Driver or get the self-contained distro zip with Windows and *NIX executable scripts from [build/distributions](https://github.com/radixCSgeek/soop/tree/master/build/distributions)
 
 ****
 
