@@ -1,0 +1,8 @@
+* * * * * #Run this block every minute
+	Shell:/bin/bash addOne.sh $${val}
+	Shell:/bin/bash addOne.sh 2 !SOOP:output=t1
+	Shell:/bin/bash addOne.sh 3 !SOOP:input=t1 !SOOP:output=t2
+	Shell:/bin/bash addOne.sh 4 !SOOP:input=t1 !SOOP:input=t2
+10 * * * * #Run this block every minute
+	Shell:/bin/bash addOne.sh $${val}
+	Shell:/bin/bash addOne.sh 2 !SOOP:output=t1

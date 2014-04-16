@@ -8,10 +8,18 @@
 
 /bin
 
-/build
+/build/classes
+
+/build/dependency-cache
+
+/build/libs
+
+/build/scripts
+
+/build/tmp
 
 /state
 
-/web/workflow
+/src/dist/web/workflow
 
 *.dot
