@@ -23,3 +23,6 @@
 /src/dist/web/workflow
 
 *.dot
+/build
+
+src/dist/state
